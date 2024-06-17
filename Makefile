@@ -35,7 +35,7 @@ clean:  ## Clean build artifacts
 
 .PHONY: archive
 archive: clean  ## Create the archive for AWS lambda
-	docker build -t bucket-antivirus-function:latest .
+	docker build -t bucket-antivirus-function:latest --platform linux/amd64 .
 	mkdir -p ./build/
 	docker run -v $(current_dir)/build:/opt/mount --rm --entrypoint cp bucket-antivirus-function:latest /opt/app/build/lambda.zip /opt/mount/lambda.zip
 
