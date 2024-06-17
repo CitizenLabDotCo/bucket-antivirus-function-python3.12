@@ -197,6 +197,12 @@ def sns_scan_results(
         },
     )
 
+def ignore_file(key):
+    if key.startswith('uploads/tmp'):
+        print("Ignoring path and exiting: %s\n" % (key))
+        return True
+    else:
+        return False
 
 def lambda_handler(event, context):
     s3 = boto3.resource("s3", endpoint_url=S3_ENDPOINT)
@@ -210,6 +216,9 @@ def lambda_handler(event, context):
     start_time = get_timestamp()
     print("Script starting at %s\n" % (start_time))
     s3_object = event_object(event, event_source=EVENT_SOURCE)
+
+    if ignore_file(s3_object.key):
+        return
 
     if str_to_bool(AV_PROCESS_ORIGINAL_VERSION_ONLY):
         verify_s3_object_version(s3, s3_object)
